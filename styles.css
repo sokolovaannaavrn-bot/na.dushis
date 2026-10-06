@@ -18,3 +18,12 @@
 @media(max-width:900px){#brands>.brand-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){#brands>.brand-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}}
 @media(max-width:360px){#brands>.brand-list{grid-template-columns:minmax(0,1fr)}}
+/* One aligned row per letter; one vertical list of names beside it. */
+#brands>#brandLetters{display:none}
+#brands>#brandList{display:block;width:100%;padding:0;border:0}
+#brands .brand-group{display:grid;grid-template-columns:64px minmax(0,1fr);gap:24px;padding:24px 0;border-top:1px solid var(--line);scroll-margin-top:90px}
+#brands .brand-initial{margin:0;font-size:26px;line-height:44px;color:var(--orange)}
+#brands .brand-names{display:flex;flex-direction:column;min-width:0;align-items:stretch}
+#brands .brand-item{font:14px 'DM Sans',sans-serif;line-height:1.5;min-height:44px;padding:11px 0;border:0;white-space:normal;overflow-wrap:anywhere;text-align:left}
+#brands .brand-empty{margin:0;padding:11px 0;color:var(--muted);font-size:13px;line-height:1.5}
+@media(max-width:600px){#brands .brand-group{grid-template-columns:44px minmax(0,1fr);gap:12px}#brands .brand-initial{font-size:22px}}

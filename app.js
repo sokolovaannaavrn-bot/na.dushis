@@ -18,7 +18,31 @@ const money=n=>n.toLocaleString('ru-RU')+' ₽'; const $=s=>document.querySelect
 function render(){let q=($('#search').value||'').toLowerCase(),selectedBrand=(brandAliases[brandFilter]||brandFilter).toLowerCase(),list=products.filter(p=>(filter==='all'||p.type===filter)&&(brandFilter==='all'||p.brand.toLowerCase()===selectedBrand)&&(`${p.brand} ${p.name} ${p.notes}`.toLowerCase().includes(q)));if($('#sort').value==='priceAsc')list.sort((a,b)=>a.price-b.price);if($('#sort').value==='priceDesc')list.sort((a,b)=>b.price-a.price);$('#resultCount').textContent=brandFilter==='all'?`${list.length} ароматов`:`${brandFilter} · ${list.length} ароматов`;
  $('#products').innerHTML=list.length?list.map(p=>`<article class="product"><div class="product-art ${p.tone}"><span class="heart">♡</span><span class="mini-bottle">${p.brand[0]}</span><small>${p.type==='unisex'?'UNISEX':p.type==='women'?'POUR FEMME':'POUR HOMME'}</small></div><div class="product-info"><p>${p.brand}</p><h3>${p.name}</h3><small>${p.notes}</small><div class="product-bottom"><strong>${money(p.price)}</strong><button class="add" data-index="${products.indexOf(p)}">В корзину +</button></div></div></article>`).join(''):`<p class="empty">${brandFilter==='all'?'По вашему запросу ничего не найдено.':`У бренда ${brandFilter} пока нет товаров в нашей подборке.`}</p>`;document.querySelectorAll('.add').forEach(b=>b.onclick=()=>{cart.push(products[+b.dataset.index]);renderCart();openDrawer()})}
 const alphabet=['all','0-9',...'ABCDEFGHIJKLMNOPQRSTUVWXYZ','А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я'];
-function renderBrands(letter='all'){const letters=$('#brandLetters');letters.innerHTML=alphabet.map(x=>`<button class="brand-letter${x===letter?' active':''}" data-brand-letter="${x}">${x==='all'?'Все':x}</button>`).join('');document.querySelectorAll('.brand-letter').forEach(b=>b.onclick=()=>{brandFilter='all';renderBrands(b.dataset.brandLetter);render()});let list=letter==='all'?brands:brands.filter(b=>letter==='0-9'?/^[0-9]/.test(b):b.toLocaleUpperCase('ru-RU').startsWith(letter));$('#brandList').innerHTML=list.map(b=>`<button class="brand-item" data-brand-name="${b}">${b}<span>→</span></button>`).join('');document.querySelectorAll('.brand-item').forEach(b=>b.onclick=()=>{brandFilter=b.dataset.brandName;filter='all';#search.value='';document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.filter==='all'));document.querySelectorAll('.brand-item').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');$('#catalog').scrollIntoView({behavior:'smooth'});render()})}
+function renderBrands(){
+ const root=$('#brandList');
+ root.replaceChildren();
+ alphabet.filter(letter=>letter!=='all').forEach((letter,index)=>{
+  const group=document.createElement('section');
+  group.className='brand-group';group.id=`brand-group-${index}`;
+  const heading=document.createElement('h3');heading.className='brand-initial';
+  const anchor=document.createElement('a');anchor.href=`#${group.id}`;anchor.textContent=letter;
+  heading.append(anchor);
+  const list=document.createElement('div');list.className='brand-names';
+  const names=brands.filter(name=>letter==='0-9'?/^[0-9]/.test(name):name.toLocaleUpperCase('ru-RU').startsWith(letter));
+  names.forEach(name=>{
+   const button=document.createElement('button');button.type='button';button.className='brand-item';button.textContent=name;
+   button.onclick=()=>{
+    brandFilter=name;filter='all';$('#search').value='';
+    document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.filter==='all'));
+    document.querySelectorAll('.brand-item').forEach(x=>x.classList.remove('selected'));
+    button.classList.add('selected');render();$('#catalog').scrollIntoView({behavior:'smooth'});
+   };
+   list.append(button);
+  });
+  if(!names.length){const empty=document.createElement('p');empty.className='brand-empty';empty.textContent='Бренды на эту букву пока не добавлены';list.append(empty)}
+  group.append(heading,list);root.append(group);
+ });
+}
 function renderCart(){$('#cartCount').textContent=cart.length;$('#cartItemsCount').textContent=cart.length?`(${cart.length})`:'';$('#cartItems').innerHTML=cart.length?cart.map((p,i)=>`<div class="cart-row"><div class="cart-thumb ${p.tone}">${p.brand[0]}</div><div><b>${p.name}</b><small>${p.brand}</small></div><strong>${money(p.price)}</strong><button data-remove="${i}">×</button></div>`).join(''):'<p class="empty">Корзина пока пуста.<br>Добавьте аромат, который понравился.</p>';$('#cartTotal').textContent=money(cart.reduce((s,p)=>s+p.price,0));document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{cart.splice(+b.dataset.remove,1);renderCart()})}
 function openDrawer(){$('#drawer').classList.add('open');$('#overlay').classList.add('show')}function closeDrawer(){$('#drawer').classList.remove('open');$('#overlay').classList.remove('show')}
 document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;render()});document.querySelectorAll('.brand-letter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.brand-letter').forEach(x=>x.classList.remove('active'));b.classList.add('active');brandFilter='all';document.querySelectorAll('.brand-item').forEach(x=>x.classList.remove('selected'));renderBrands(b.dataset.brandLetter||'all');render()});$('#search').oninput=render;$('#sort').onchange=render;$('#openCart').onclick=openDrawer;$('#closeCart').onclick=closeDrawer;$('#overlay').onclick=closeDrawer;$('#mobileMenu').onclick=()=>document.querySelector('.main-nav').classList.toggle('show');$('#checkout').onclick=()=>alert(cart.length?'Спасибо! Менеджер свяжется с вами для подтверждения заказа.':'Добавьте аромат в корзину.');$('#subscribe').onsubmit=e=>{e.preventDefault();alert('Спасибо! Вы подписаны на новости AURA.');e.target.reset()};renderBrands();render();renderCart();
