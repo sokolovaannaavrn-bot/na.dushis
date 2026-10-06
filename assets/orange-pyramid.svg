@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 360">
+<defs>
+ <linearGradient id="glass" x2="1" y2=".6"><stop stop-color="#ffffff" stop-opacity=".8"/><stop offset=".45" stop-color="#c7e6e2" stop-opacity=".12"/><stop offset="1" stop-color="#ffffff" stop-opacity=".65"/></linearGradient>
+ <linearGradient id="edge"><stop stop-color="#d0eee9"/><stop offset=".5" stop-color="#ffffff"/><stop offset="1" stop-color="#779da4"/></linearGradient>
+ <radialGradient id="orange"><stop stop-color="#ffcd66"/><stop offset=".65" stop-color="#f18422"/><stop offset="1" stop-color="#b74316"/></radialGradient>
+ <radialGradient id="petal"><stop stop-color="#ffe8ef"/><stop offset=".7" stop-color="#e479a0"/><stop offset="1" stop-color="#a94570"/></radialGradient>
+ <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#e6b37d"/><stop offset=".5" stop-color="#a66c40"/><stop offset="1" stop-color="#623e2a"/></linearGradient>
+ <g id="slice"><circle r="23" fill="#f79930"/><circle r="20" fill="#ffe6ac"/><circle r="17.5" fill="#bd3a24"/><g stroke="#ffc48c" stroke-width="1.7"><path d="M0-18V18M-18 0H18M-13-13L13 13M-13 13L13-13"/></g><circle r="3" fill="#ffe7b3"/></g>
+ <g id="flower"><g fill="url(#petal)" stroke="#f9c4d6" stroke-width=".6"><ellipse cy="-11" rx="8" ry="13"/><ellipse cy="-11" rx="8" ry="13" transform="rotate(72)"/><ellipse cy="-11" rx="8" ry="13" transform="rotate(144)"/><ellipse cy="-11" rx="8" ry="13" transform="rotate(216)"/><ellipse cy="-11" rx="8" ry="13" transform="rotate(288)"/></g><circle r="4" fill="#f6cb67"/><circle r="1.5" fill="#8d6130"/></g>
+ <g id="jasmine" fill="#fffdf0" stroke="#dbdfbe" stroke-width=".7"><ellipse cy="-9" rx="4" ry="11"/><ellipse cy="-9" rx="4" ry="11" transform="rotate(72)"/><ellipse cy="-9" rx="4" ry="11" transform="rotate(144)"/><ellipse cy="-9" rx="4" ry="11" transform="rotate(216)"/><ellipse cy="-9" rx="4" ry="11" transform="rotate(288)"/><circle r="3" fill="#e2bb47"/></g>
+</defs>
+<ellipse cx="183" cy="323" rx="132" ry="13" fill="#497273" opacity=".12"/>
+<!-- Three-dimensional glass case and two glass shelves. -->
+<path d="M180 24L316 300 267 326 44 300Z" fill="url(#glass)" stroke="url(#edge)" stroke-width="2"/>
+<path d="M180 24L267 326 316 300Z" fill="#a1cbd0" opacity=".22"/>
+<path d="M121 145L239 145 218 158 131 158Z M83 222L277 222 246 240 102 240Z" fill="url(#glass)" stroke="#faffff" stroke-width="1.5"/>
+<!-- Citrus: whole bitter orange, blood-orange cross section and leaf. -->
+<circle cx="181" cy="114" r="19" fill="url(#orange)"/>
+<path d="M180 94q12-21 28-13-10 18-28 13" fill="#587847"/><path d="M180 94l19-8" stroke="#a3b779" fill="none"/>
+<use href="#slice" transform="translate(165 126) scale(.72) rotate(-12)"/>
+<path d="M176 103q4-6 10-5" stroke="#ffe0a1" opacity=".7" fill="none" stroke-width="2"/>
+<!-- Geranium and jasmine bouquet. -->
+<path d="M163 218q0-28-24-45M161 218q28-26 44-47" fill="none" stroke="#648354" stroke-width="2"/>
+<path d="M157 211q-32-5-28-23 27-6 28 23M176 207q31-26 34-2-17 14-34 2" fill="#739362"/>
+<use href="#flower" transform="translate(153 189) scale(.85)"/><use href="#flower" transform="translate(178 195) scale(.67) rotate(20)"/>
+<use href="#jasmine" transform="translate(207 187) scale(.83)"/><use href="#jasmine" transform="translate(193 211) scale(.64) rotate(20)"/>
+<!-- Sandalwood, amber resin and tonka beans. -->
+<g transform="translate(127 281) rotate(-13)"><rect x="-31" y="-12" width="80" height="23" rx="6" fill="url(#wood)"/><path d="M-25-6H43M-25 0H45M-22 6H39" stroke="#e3b685" stroke-width="1" opacity=".7"/><ellipse cx="48" cy="0" rx="7" ry="11" fill="#edc795"/><ellipse cx="48" cy="0" rx="3" ry="6" fill="none" stroke="#ad7a48"/></g>
+<path d="M175 281L186 256 211 260 227 280 207 299 181 295Z" fill="#dba34b" stroke="#ffe1a0"/><path d="M186 256L194 279 211 260M194 279L207 299M194 279L227 280" fill="none" stroke="#f9d58c" stroke-width="1.5"/><path d="M181 276L186 264 191 275Z" fill="#fff1ba" opacity=".75"/>
+<g fill="#60422f" stroke="#997153"><ellipse cx="241" cy="290" rx="9" ry="17" transform="rotate(34 241 290)"/><ellipse cx="218" cy="303" rx="8" ry="15" transform="rotate(66 218 303)"/></g><path d="M248 278l-14 23M231 298l-25 10" stroke="#c09a6e" fill="none"/>
+<!-- Polished edges and reflected light. -->
+<path d="M180 24L44 300 267 326 316 300 180 24 267 326M44 300H316" fill="none" stroke="url(#edge)" stroke-width="2"/>
+<path d="M166 62L62 285M191 68L280 279" stroke="#fff" stroke-width="3" opacity=".65"/>
+<path d="M90 240L71 278 113 283 126 247Z" fill="#fff" opacity=".17"/>
+</svg>
