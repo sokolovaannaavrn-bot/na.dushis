@@ -47,14 +47,14 @@
 /* Orange Sanguine: medium bottle, expressive spray and a glass note pyramid. */
 .orange-card .product-art{perspective:900px;background:linear-gradient(145deg,#f7e3a1,#d9a63a)}
 .orange-card .product-flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.75,.2,1)}
-.orange-card:hover .product-flip,.orange-card:focus-within .product-flip{transform:rotateY(180deg)}
+.orange-card .product-flip.is-flipped{transform:rotateY(180deg)}
 .orange-card .product-face{position:absolute;inset:0;display:grid;place-items:center;backface-visibility:hidden;transform-style:preserve-3d}
 .orange-card .product-front{overflow:hidden}
-.orange-card .product-photo{width:58%;height:88%;object-fit:contain;filter:drop-shadow(12px 18px 10px #8b5b1938)}
+.orange-card .product-photo{width:46%;height:78%;max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(12px 18px 10px #8b5b1938)}
 .orange-card .product-back{transform:rotateY(180deg);padding:24px;background:linear-gradient(135deg,#fff8d666,#f0a53d44)}
-.glass-pyramid{position:relative;width:84%;height:78%;padding:45px 18px 18px;display:flex;flex-direction:column;justify-content:center;gap:10px;clip-path:polygon(50% 0,100% 100%,0 100%);background:linear-gradient(135deg,#ffffff75,#ffd47622);border:1px solid #fff9;filter:drop-shadow(0 8px 10px #9f691c55);text-align:center}
-.glass-pyramid:before{content:'';position:absolute;inset:8% 8% 0;border:1px solid #fff9;clip-path:polygon(50% 0,100% 100%,0 100%);pointer-events:none}
-.glass-pyramid div{position:relative;z-index:1;font-size:10px;line-height:1.25}.glass-pyramid b{display:block;color:#8a4d16;font-size:9px;text-transform:uppercase;letter-spacing:.12em}.glass-pyramid span{display:block;color:#453321}.pyramid-title{position:absolute;top:28%;left:0;right:0;z-index:1;font:italic 11px Georgia,serif;letter-spacing:.12em;color:#75491d}
-.orange-card .product-front:after{content:'•  ·  .   ·  •  .';position:absolute;left:52%;top:38%;color:#fff8;font-size:22px;letter-spacing:9px;filter:blur(2px);animation:spray 1s ease-in-out infinite alternate}
-@keyframes spray{from{opacity:.15;transform:translate(0,14px) scale(.7)}to{opacity:.95;transform:translate(42px,-16px) scale(1.5)}}
-@media(max-width:800px){.orange-card .product-photo{width:62%;height:84%}.orange-card .product-back{padding:16px}.glass-pyramid{width:92%;padding:38px 10px 12px;gap:7px}}
+.glass-pyramid{position:relative;width:88%;height:88%;display:grid;place-items:center;filter:drop-shadow(0 8px 10px #9f691c55)}
+.glass-pyramid svg{width:100%;height:100%;overflow:visible}.note-art{filter:drop-shadow(0 2px 2px #8c4b2b55)}
+.pyramid-labels{position:absolute;inset:0;pointer-events:none}.pyramid-labels span{position:absolute;left:0;right:0;text-align:center;font-size:8px;color:#78451f;text-transform:uppercase;letter-spacing:.08em}.pyramid-labels span:nth-child(1){top:30%}.pyramid-labels span:nth-child(2){top:58%}.pyramid-labels span:nth-child(3){top:82%}
+.spray-particles{position:absolute;left:57%;top:37%;width:42%;height:34%;pointer-events:none}.spray-particles i{position:absolute;display:block;width:9px;height:9px;border-radius:50%;background:#fff7b0;box-shadow:0 0 10px 4px #fff5a6,0 0 18px 5px #ff9d35;animation:spray-burst 1.05s ease-out infinite}.spray-particles i:nth-child(1){left:4%;top:45%;animation-delay:-.1s}.spray-particles i:nth-child(2){left:22%;top:20%;width:6px;height:6px;animation-delay:-.35s}.spray-particles i:nth-child(3){left:35%;top:60%;animation-delay:-.55s}.spray-particles i:nth-child(4){left:50%;top:5%;width:5px;height:5px;animation-delay:-.75s}.spray-particles i:nth-child(5){left:62%;top:42%;animation-delay:-.2s}.spray-particles i:nth-child(6){left:76%;top:18%;width:7px;height:7px;animation-delay:-.45s}.spray-particles i:nth-child(7){left:88%;top:67%;width:5px;height:5px;animation-delay:-.65s}.spray-particles i:nth-child(8){left:42%;top:83%;width:6px;height:6px;animation-delay:-.9s}
+@keyframes spray-burst{0%{opacity:0;transform:translate(-22px,8px) scale(.2)}25%{opacity:1}100%{opacity:0;transform:translate(30px,-18px) scale(1.8)}}
+@media(max-width:800px){.orange-card .product-photo{width:48%;height:74%}.orange-card .product-back{padding:12px}.glass-pyramid{width:94%;height:92%}.pyramid-labels span{font-size:7px}}
