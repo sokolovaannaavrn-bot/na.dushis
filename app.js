@@ -16,7 +16,39 @@ brands.sort((a,b)=>a.localeCompare(b,'en',{sensitivity:'base',numeric:true}));
 const brandAliases={'Kilian Paris':'Kilian','MAISON MARTIN MARGIELA':'Maison Margiela','House of Creed':'CREED','Mancera Paris':'Mancera','BYREDO':'BYREDO','KILIAN':'Kilian','LE LABO':'Le Labo'};
 const money=n=>n.toLocaleString('ru-RU')+' ₽'; const $=s=>document.querySelector(s);
 function render(){let q=($('#search').value||'').toLowerCase(),selectedBrand=(brandAliases[brandFilter]||brandFilter).toLowerCase(),list=products.filter(p=>(filter==='all'||p.type===filter)&&(brandFilter==='all'||p.brand.toLowerCase()===selectedBrand)&&(`${p.brand} ${p.name} ${p.notes}`.toLowerCase().includes(q)));if($('#sort').value==='priceAsc')list.sort((a,b)=>a.price-b.price);if($('#sort').value==='priceDesc')list.sort((a,b)=>b.price-a.price);$('#resultCount').textContent=brandFilter==='all'?`${list.length} ароматов`:`${brandFilter} · ${list.length} ароматов`;
- $('#products').innerHTML=list.length?list.map(p=>`<article class="product"><div class="product-art ${p.tone}"><span class="heart">♡</span><span class="mini-bottle">${p.brand[0]}</span><small>${p.type==='unisex'?'UNISEX':p.type==='women'?'POUR FEMME':'POUR HOMME'}</small></div><div class="product-info"><p>${p.brand}</p><h3>${p.name}</h3><small>${p.notes}</small><div class="product-bottom"><strong>${money(p.price)}</strong><button class="add" data-index="${products.indexOf(p)}">В корзину +</button></div></div></article>`).join(''):`<p class="empty">${brandFilter==='all'?'По вашему запросу ничего не найдено.':`У бренда ${brandFilter} пока нет товаров в нашей подборке.`}</p>`;document.querySelectorAll('.add').forEach(b=>b.onclick=()=>{cart.push(products[+b.dataset.index]);renderCart();openDrawer()})}
+ $('#products').innerHTML=list.length?list.map(productCard).join(''):'<p class="empty">По вашему запросу ничего не найдено.</p>';
+ document.querySelectorAll('.product').forEach(card=>{
+  const index=+card.dataset.index;
+  card.ontoggle=()=>{if(card.open)openedProducts.add(index);else openedProducts.delete(index)};
+  card.querySelectorAll('[data-volume]').forEach(button=>button.onclick=()=>{
+   selections.set(index,button.dataset.volume);
+   updateSelection(card,index);
+  });
+  card.querySelector('.add').onclick=()=>{
+   const p=products[index],variant=selections.get(index),price=variantPrice(p,variant);
+   if(price===null)return;
+   const existing=cart.find(item=>item.productIndex===index&&item.variant===variant);
+   if(existing)existing.quantity++;else cart.push({...p,productIndex:index,variant,volume:variant==='Тестер'?null:variant,price,quantity:1});
+   renderCart();openDrawer();
+  };
+  updateSelection(card,index);
+ });
+}
+const volumes=['1 мл','3 мл','5 мл','10 мл','15 мл','20 мл','30 мл','50 мл','100 мл','Тестер'];
+const selections=new Map(),openedProducts=new Set();
+const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function variantPrice(p,volume){const value=p.volumePrices?.[volume];return typeof value==='number'&&Number.isFinite(value)&&value>0?value:null}
+function productCard(p){
+ const index=products.indexOf(p),prices=volumes.map(v=>variantPrice(p,v)).filter(v=>v!==null);
+ const price=prices.length?'от '+money(Math.min(...prices)):Number.isFinite(p.price)?money(p.price):'Цена уточняется';
+ return `<details class="product" data-index="${index}" ${openedProducts.has(index)?'open':''}><summary aria-label="${escapeHTML(p.brand+' '+p.name)} — выбрать объём"><div class="product-art ${escapeHTML(p.tone||'sand')}">${p.image?`<img class="product-photo" src="${escapeHTML(p.image)}" alt="${escapeHTML(p.name)}" loading="lazy">`:`<span class="mini-bottle">${escapeHTML(p.brand[0])}</span>`}<span class="perfume-mist" aria-hidden="true"></span><small>${p.type==='unisex'?'UNISEX':p.type==='women'?'POUR FEMME':'POUR HOMME'}</small></div><div class="product-info"><p>${escapeHTML(p.brand)}</p><h3>${escapeHTML(p.name)}</h3><small>${escapeHTML(p.notes)}</small><div class="product-bottom"><strong>${price}</strong><span class="choose-hint">Выбрать объём</span></div></div></summary><div class="volume-panel"><p>Выберите объём</p><div class="volume-options" role="group" aria-label="Объём аромата">${volumes.filter(v=>v!=='Тестер'||variantPrice(p,v)!==null).map(v=>`<button type="button" data-volume="${v}" aria-pressed="false" ${variantPrice(p,v)===null?'disabled':''}>${v}</button>`).join('')}</div><p class="variant-price" aria-live="polite"></p><button type="button" class="add" hidden>Добавить в корзину</button></div></details>`;
+}
+function updateSelection(card,index){
+ const variant=selections.get(index),price=variantPrice(products[index],variant);
+ card.querySelectorAll('[data-volume]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.volume===variant)));
+ card.querySelector('.variant-price').textContent=price!==null?money(price):volumes.some(v=>variantPrice(products[index],v)!==null)?'Выберите доступный объём':'Цены по объёмам пока не указаны';
+ card.querySelector('.add').hidden=price===null;
+}
 const alphabet=['all','0-9',...'ABCDEFGHIJKLMNOPQRSTUVWXYZ','А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я'];
 function renderBrands(){
  const root=$('#brandList');
@@ -43,6 +75,6 @@ function renderBrands(){
   group.append(heading,list);root.append(group);
  });
 }
-function renderCart(){$('#cartCount').textContent=cart.length;$('#cartItemsCount').textContent=cart.length?`(${cart.length})`:'';$('#cartItems').innerHTML=cart.length?cart.map((p,i)=>`<div class="cart-row"><div class="cart-thumb ${p.tone}">${p.brand[0]}</div><div><b>${p.name}</b><small>${p.brand}</small></div><strong>${money(p.price)}</strong><button data-remove="${i}">×</button></div>`).join(''):'<p class="empty">Корзина пока пуста.<br>Добавьте аромат, который понравился.</p>';$('#cartTotal').textContent=money(cart.reduce((s,p)=>s+p.price,0));document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{cart.splice(+b.dataset.remove,1);renderCart()})}
+function renderCart(){const count=cart.reduce((sum,p)=>sum+p.quantity,0);$('#cartCount').textContent=count;$('#cartItemsCount').textContent=count?`(${count})`:'';$('#cartItems').innerHTML=cart.length?cart.map((p,i)=>`<div class="cart-row"><div class="cart-thumb ${escapeHTML(p.tone||'sand')}">${p.image?`<img src="${escapeHTML(p.image)}" alt="${escapeHTML(p.name)}">`:escapeHTML(p.brand[0])}</div><div><b>${escapeHTML(p.name)}</b><small>${escapeHTML(p.brand)}</small><small>${escapeHTML(p.variant)} · ${p.quantity} шт.</small></div><strong>${money(p.price*p.quantity)}</strong><button data-remove="${i}" aria-label="Удалить позицию">×</button></div>`).join(''):'<p class="empty">Корзина пока пуста.<br>Добавьте аромат, который понравился.</p>';$('#cartTotal').textContent=money(cart.reduce((s,p)=>s+p.price*p.quantity,0));document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{cart.splice(+b.dataset.remove,1);renderCart()})}
 function openDrawer(){$('#drawer').classList.add('open');$('#overlay').classList.add('show')}function closeDrawer(){$('#drawer').classList.remove('open');$('#overlay').classList.remove('show')}
 document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;render()});document.querySelectorAll('.brand-letter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.brand-letter').forEach(x=>x.classList.remove('active'));b.classList.add('active');brandFilter='all';document.querySelectorAll('.brand-item').forEach(x=>x.classList.remove('selected'));renderBrands(b.dataset.brandLetter||'all');render()});$('#search').oninput=render;$('#sort').onchange=render;$('#openCart').onclick=openDrawer;$('#closeCart').onclick=closeDrawer;$('#overlay').onclick=closeDrawer;$('#mobileMenu').onclick=()=>document.querySelector('.main-nav').classList.toggle('show');$('#checkout').onclick=()=>alert(cart.length?'Спасибо! Менеджер свяжется с вами для подтверждения заказа.':'Добавьте аромат в корзину.');$('#subscribe').onsubmit=e=>{e.preventDefault();alert('Спасибо! Вы подписаны на новости AURA.');e.target.reset()};renderBrands();render();renderCart();
